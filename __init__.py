@@ -73,9 +73,9 @@ def set(name):
 def buttonunity(context):
     if  bpy.context.active_object.mode == 'OBJECT':
         bpy.ops.object.transform_apply(location=False, rotation=True, scale=False)
-        bpy.context.object.rotation_euler[1] = -1.5708
+        bpy.context.object.rotation_euler[0] = -1.5708
         bpy.ops.object.transform_apply(location=False, rotation=True, scale=False)
-        bpy.context.object.rotation_euler[1] = 1.5708
+        bpy.context.object.rotation_euler[0] = 1.5708
     
 
 
