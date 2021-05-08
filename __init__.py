@@ -98,6 +98,75 @@ class UnityTransform(bpy.types.Operator):
         return {'FINISHED'}
 
 
+#Welding Normal operator
+
+def welding(context):
+    if  bpy.context.active_object.mode == 'OBJECT' and len(bpy.context.selected_objects)==2:
+        
+        area=bpy.context.area.ui_type
+        bpy.context.area.ui_type = 'VIEW_3D'
+
+        active=bpy.context.active_object
+        selected=bpy.context.active_object
+
+        for object in bpy.context.selected_objects:
+            if not object==active:
+                selected=object
+
+
+        active.data.use_auto_smooth = True
+        bpy.ops.object.shade_smooth()
+
+
+        #vertex group
+        bpy.ops.object.editmode_toggle()
+        allGroup=active.vertex_groups.new()
+        bpy.ops.mesh.select_all(action='SELECT')
+        bpy.ops.object.vertex_group_assign()
+        bpy.ops.object.editmode_toggle()
+
+
+        #vertexWeightProximity modifier
+        vertexWeight=active.modifiers.new('vertexWeightProximity(sp)', 'VERTEX_WEIGHT_PROXIMITY')
+        vertexWeight.vertex_group = allGroup.name
+        vertexWeight.target=selected
+        vertexWeight.proximity_mode = 'GEOMETRY'
+        vertexWeight.proximity_geometry = {'FACE'}
+        vertexWeight.max_dist = 0.2
+        vertexWeight.falloff_type = 'SMOOTH'
+
+        #DataTransfer modifier
+        dataTransfer=active.modifiers.new('DataTransfer(sp)', 'DATA_TRANSFER')
+        dataTransfer.object=selected
+        dataTransfer.vertex_group=allGroup.name
+        dataTransfer.invert_vertex_group = True
+        dataTransfer.use_loop_data = True
+        dataTransfer.data_types_loops = {'CUSTOM_NORMAL'}
+        dataTransfer.loop_mapping = 'POLYINTERP_NEAREST'
+
+        bpy.context.area.ui_type = area
+        
+
+
+
+
+
+
+
+class WeldingNormal(bpy.types.Operator):
+    """Tooltip"""
+    bl_idname = "object.welding_normal"
+    bl_label = "Welding Normal"
+
+    @classmethod
+    def poll(cls, context):
+        return context.active_object is not None
+
+    def execute(self, context):
+        welding(context)
+        return {'FINISHED'}
+
+
 
 #droop operator
 
@@ -263,7 +332,7 @@ class Orgin(bpy.types.Operator):
 
 
 
-class HelloWorldPanel(bpy.types.Panel):
+class ShortPanel(bpy.types.Panel):
     """Creates a Panel in the Object properties window"""
     bl_label = "Short Panel"
     bl_idname = "OBJECT_PT_hello"
@@ -286,6 +355,9 @@ class HelloWorldPanel(bpy.types.Panel):
 
         row = layout.row()
         row.operator("object.unity_transform")
+
+        row = layout.row()
+        row.operator("object.welding_normal")
         
         row = layout.row()
         row.operator("object.droop")
@@ -300,18 +372,20 @@ class HelloWorldPanel(bpy.types.Panel):
         
 def register():
     bpy.utils.register_class(UnityTransform)
+    bpy.utils.register_class(WeldingNormal)
     bpy.utils.register_class(Droop)
     bpy.utils.register_class(Denoiseshot)
     bpy.utils.register_class(Orgin)
-    bpy.utils.register_class(HelloWorldPanel)
+    bpy.utils.register_class(ShortPanel)
 
 
 def unregister():
     bpy.utils.unregister_class(UnityTransform)
+    bpy.utils.unregister_class(WeldingNormal)
     bpy.utils.unregister_class(Droop)
     bpy.utils.unregister_class(Denoiseshot)
     bpy.utils.unregister_class(Orgin)
-    bpy.utils.unregister_class(HelloWorldPanel)
+    bpy.utils.unregister_class(ShortPanel)
 
 
 if __name__ == "__main__":
