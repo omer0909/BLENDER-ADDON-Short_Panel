@@ -65,14 +65,23 @@ def set(name):
 # Unity Transform operator
 
 def buttonunity(context):
+    oldActive=bpy.context.active_object
     if bpy.context.active_object.mode == 'OBJECT':
-        bpy.ops.object.transform_apply(
-            location=False, rotation=True, scale=False)
-        bpy.context.object.rotation_euler[0] = -1.5708
-        bpy.ops.object.transform_apply(
-            location=False, rotation=True, scale=False)
-        bpy.context.object.rotation_euler[0] = 1.5708
 
+        for object in bpy.context.selected_objects:
+            bpy.context.view_layer.objects.active=object
+            selectf(object)
+
+            bpy.ops.object.transform_apply(
+                location=False, rotation=True, scale=False)
+            bpy.context.object.rotation_euler[0] = -1.5708
+            bpy.ops.object.transform_apply(
+                location=False, rotation=True, scale=False)
+            bpy.context.object.rotation_euler[0] = 1.5708
+
+            oldSelectf()
+
+    bpy.context.view_layer.objects.active=oldActive
 
 class UnityTransform(bpy.types.Operator):
     """Tooltip"""
@@ -154,7 +163,6 @@ class WeldingNormal(bpy.types.Operator):
 
 def bend(context):
     if bpy.context.active_object.mode == 'OBJECT' and len(bpy.context.selected_objects) == 2:
-        import bpy
 
         area = bpy.context.area.ui_type
         bpy.context.area.ui_type = 'VIEW_3D'
@@ -359,6 +367,9 @@ class ShortPanel(bpy.types.Panel):
 
         row = layout.row()
         row.operator("object.welding_normal")
+
+        row = layout.row()
+        row.operator("object.bend")
 
         row = layout.row()
         row.operator("object.droop")
