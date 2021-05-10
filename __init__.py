@@ -65,23 +65,13 @@ def set(name):
 # Unity Transform operator
 
 def buttonunity(context):
-    oldActive = bpy.context.active_object
     if bpy.context.active_object.mode == 'OBJECT':
-
-        for object in bpy.context.selected_objects:
-            bpy.context.view_layer.objects.active = object
-            selectf(object)
-
-            bpy.ops.object.transform_apply(
-                location=False, rotation=True, scale=False)
-            bpy.context.object.rotation_euler[0] = -1.5708
-            bpy.ops.object.transform_apply(
-                location=False, rotation=True, scale=False)
-            bpy.context.object.rotation_euler[0] = 1.5708
-
-            oldSelectf()
-
-    bpy.context.view_layer.objects.active = oldActive
+        bpy.ops.object.transform_apply(
+            location=False, rotation=True, scale=False)
+        bpy.context.object.rotation_euler[0] = -1.5708
+        bpy.ops.object.transform_apply(
+            location=False, rotation=True, scale=False)
+        bpy.context.object.rotation_euler[0] = 1.5708
 
 
 class UnityTransform(bpy.types.Operator):
