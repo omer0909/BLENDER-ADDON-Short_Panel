@@ -65,11 +65,11 @@ def set(name):
 # Unity Transform operator
 
 def buttonunity(context):
-    oldActive=bpy.context.active_object
+    oldActive = bpy.context.active_object
     if bpy.context.active_object.mode == 'OBJECT':
 
         for object in bpy.context.selected_objects:
-            bpy.context.view_layer.objects.active=object
+            bpy.context.view_layer.objects.active = object
             selectf(object)
 
             bpy.ops.object.transform_apply(
@@ -81,7 +81,8 @@ def buttonunity(context):
 
             oldSelectf()
 
-    bpy.context.view_layer.objects.active=oldActive
+    bpy.context.view_layer.objects.active = oldActive
+
 
 class UnityTransform(bpy.types.Operator):
     """Tooltip"""
@@ -106,7 +107,7 @@ def welding(context):
         bpy.context.area.ui_type = 'VIEW_3D'
 
         active = bpy.context.active_object
-        selected = bpy.context.active_object
+        selected = bpy.context.selected_objects[0]
 
         for object in bpy.context.selected_objects:
             if not object == active:
@@ -162,7 +163,7 @@ class WeldingNormal(bpy.types.Operator):
 # Bend Normal operator
 
 def bend(context):
-    if bpy.context.active_object.mode == 'OBJECT' and len(bpy.context.selected_objects) == 2:
+    if bpy.context.active_object.mode == 'OBJECT':
 
         area = bpy.context.area.ui_type
         bpy.context.area.ui_type = 'VIEW_3D'
