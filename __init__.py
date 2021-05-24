@@ -4,7 +4,7 @@ bl_info = {
     "author": "Ömer Faruk Öz",
     "version": (1, 0),
     "blender": (2, 80, 0),
-    "location": "PROPERTIES > Object > Hello World Panel",
+    "location": "View3D > Sidebar > sp",
     "description": "ShortWay",
     "warning": "",
     "doc_url": "",
@@ -288,10 +288,8 @@ def buttonorgin(context):
         cursor = (bpy.context.scene.cursor.location.x,
                   bpy.context.scene.cursor.location.y, bpy.context.scene.cursor.location.z)
 
-        area = bpy.context.area.type
-        bpy.context.area.type = 'VIEW_3D'
+
         bpy.ops.view3d.snap_cursor_to_selected()
-        bpy.context.area.type = area
         bpy.ops.object.editmode_toggle()
 
         selectf(bpy.context.active_object)
@@ -333,25 +331,14 @@ class Orgin(bpy.types.Operator):
 
 
 class ShortPanel(bpy.types.Panel):
-    """Creates a Panel in the Object properties window"""
     bl_label = "Short Panel"
-    bl_idname = "OBJECT_PT_hello"
-    bl_space_type = 'PROPERTIES'
-    bl_region_type = 'WINDOW'
-    bl_context = "object"
+    bl_idname = "OBJECT_PT"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_category = "sp"
 
     def draw(self, context):
         layout = self.layout
-
-        #obj = context.object
-
-        #row = layout.row()
-        #row.label(text="Hello world!", icon='WORLD_DATA')
-
-        #row = layout.row()
-        #row.label(text="Active object is: " + obj.name)
-        #row = layout.row()
-        #row.prop(obj, "name")
 
         row = layout.row()
         row.operator("object.unity_transform")
